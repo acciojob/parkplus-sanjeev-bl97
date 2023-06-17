@@ -19,6 +19,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public ParkingLot addParkingLot(String name, String address) {
         ParkingLot parkingLot = new ParkingLot(name,address);
 
+        parkingLotRepository1.save(parkingLot);
         return parkingLot;
 
     }
