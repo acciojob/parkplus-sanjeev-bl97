@@ -9,6 +9,8 @@ import com.driver.services.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService {
     @Autowired
@@ -56,14 +58,21 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
 
        ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
-       Spot spot = spotRepository1.findById(spotId).get();
+       List<Spot> spotList = parkingLot.getSpotList();
+       Spot updatedSpot = null;
 
-        spot.setPricePerHour(pricePerHour);
+       for(Spot spot : spotList)
+           if(spot.getId() == spotId){
+           spot.setPricePerHour(pricePerHour);
+           updatedSpot = spot;
+           break;
+           }
 
+       parkingLot.setSpotList(spotList);
 
         parkingLotRepository1.save(parkingLot);
 
-        return spot;
+        return updatedSpot;
     }
 
     @Override
