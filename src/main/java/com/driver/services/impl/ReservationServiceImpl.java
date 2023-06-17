@@ -30,7 +30,7 @@ public class ReservationServiceImpl implements ReservationService {
         ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
 
         if(user == null || parkingLot == null)
-            throw new Exception("Reservation cannot be made");
+            throw new Exception("Cannot make reservation");
 
         SpotType  spotType;
 
@@ -60,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         if(min == Integer.MAX_VALUE)
-            throw new Exception("Reservation cannot be made");
+            throw new Exception("Cannot make reservation");
 
         minSpot.setOccupied(true);
 
