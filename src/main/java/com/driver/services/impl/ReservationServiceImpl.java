@@ -1,6 +1,7 @@
 package com.driver.services.impl;
 
 import com.driver.model.*;
+import com.driver.model.SpotType;
 import com.driver.repository.ParkingLotRepository;
 import com.driver.repository.ReservationRepository;
 import com.driver.repository.SpotRepository;
@@ -21,8 +22,62 @@ public class ReservationServiceImpl implements ReservationService {
     ReservationRepository reservationRepository3;
     @Autowired
     ParkingLotRepository parkingLotRepository3;
+
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
+
+        User user = userRepository3.findById(userId).get();
+        ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
+
+        if(user == null || parkingLot == null)
+            throw new Exception("Reservation cannot be made");
+
+//        SpotType spotType;
+//
+//        if(numberOfWheels == 2)
+//            spotType = SpotType.TWO_WHEELER;
+//        else if(numberOfWheels == 4)
+//            spotType = SpotType.FOUR_WHEELER;
+//        else
+//            spotType = SpotType.OTHERS;
+
+        List<Spot> spotList = parkingLot.getSpotList();
+
+        int min = Integer.MAX_VALUE;
+        Spot minSpot = null;
+
+        for(Spot spot : spotList){
+            if(
+                    min > spot.getPricePerHour() && !spot.isOccupied() &&
+                            ( (numberOfWheels == 2) || (numberOfWheels == 4 && !spot.getSpotType().equals(SpotType.TWO_WHEELER))
+                    || (numberOfWheels > 4 && spot.getSpotType().equals(SpotType.OTHERS)) )
+            )
+
+            {
+                min = spot.getPricePerHour();
+                minSpot = spot;
+
+            }
+        }
+
+        if(min == Integer.MAX_VALUE)
+            throw new Exception("Reservation cannot be made");
+
+        minSpot.setOccupied(true);
+
+        Reservation reservation = new Reservation(timeInHours,user,minSpot);
+        reservationRepository3.save(reservation);
+
+        user.getReservationList().add(reservation);
+        minSpot.getReservationList().add(reservation);
+
+        userRepository3.save(user);
+        parkingLotRepository3.save(parkingLot);
+
+        return reservation;
+
+
+
 
     }
 }
