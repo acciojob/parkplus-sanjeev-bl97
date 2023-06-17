@@ -60,13 +60,18 @@ public class ReservationServiceImpl implements ReservationService {
         }
         if (min == Integer.MAX_VALUE)
             throw new Exception("Cannot make reservation");
+
         minSpot.setOccupied(true);
+
         Reservation reservation = new Reservation(timeInHours, user, minSpot);
         reservationRepository3.save(reservation);
+
         user.getReservationList().add(reservation);
         minSpot.getReservationList().add(reservation);
+
         userRepository3.save(user);
-        parkingLotRepository3.save(parkingLot);
+        spotRepository3.save(minSpot);
+
         return reservation;
     }
         catch (Exception e){
