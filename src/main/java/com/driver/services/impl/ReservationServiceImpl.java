@@ -64,7 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
         minSpot.setOccupied(true);
 
         Reservation reservation = new Reservation(timeInHours, user, minSpot);
-        reservationRepository3.save(reservation);
+
 
         user.getReservationList().add(reservation);
         minSpot.getReservationList().add(reservation);
